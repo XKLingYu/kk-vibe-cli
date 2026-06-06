@@ -1,0 +1,40 @@
+{
+  "name": "kk-codex",
+  "version": "0.137.0-kk.4",
+  "description": "OpenAI Codex CLI 国内加速启动器 - Powered by kk-vibe.top",
+  "bin": {
+    "kk-codex": "./bin/kk-codex.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/bundle.js kk-codex"
+  },
+  "keywords": [
+    "codex",
+    "openai",
+    "cli",
+    "ai",
+    "api",
+    "china",
+    "国内加速",
+    "AI编程",
+    "coding-assistant",
+    "kk-vibe"
+  ],
+  "author": "kk-vibe",
+  "license": "MIT",
+  "homepage": "https://www.kk-vibe.top",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xklingyu/kk-vibe-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/xklingyu/kk-vibe-cli/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

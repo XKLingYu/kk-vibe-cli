@@ -1,0 +1,41 @@
+{
+  "name": "kk-claude",
+  "version": "2.1.166-kk.4",
+  "description": "Claude Code 国内加速启动器 - Powered by kk-vibe.top",
+  "bin": {
+    "kk-claude": "./bin/kk-claude.js"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "scripts": {
+    "build": "node ../../scripts/bundle.js kk-claude"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "anthropic",
+    "ai",
+    "api",
+    "china",
+    "国内加速",
+    "AI编程",
+    "claude-api",
+    "coding-assistant",
+    "kk-vibe"
+  ],
+  "author": "kk-vibe",
+  "license": "MIT",
+  "homepage": "https://www.kk-vibe.top",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xklingyu/kk-vibe-cli"
+  },
+  "bugs": {
+    "url": "https://github.com/xklingyu/kk-vibe-cli/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
