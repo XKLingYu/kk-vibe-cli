@@ -1,8 +1,9 @@
 import { execSync } from 'child_process';
-import { existsSync, mkdirSync } from 'fs';
-import { resolve, dirname, sep } from 'path';
-import { CLI_DIR } from './constants';
+import { existsSync, mkdirSync, rmSync } from 'fs';
+import { resolve } from 'path';
+import { CLI_DIR, TOOL_CONFIG } from './constants';
 import { getConfig, saveConfig } from './config';
+import { findCLIBin } from './resolve';
 
 export async function detectRegistry(): Promise<string> {
   const registries = [
@@ -25,15 +26,23 @@ export async function detectRegistry(): Promise<string> {
 }
 
 export async function ensureCLIInstalled(tool: 'claude' | 'codex') {
-  const pkg = tool === 'claude'
-    ? '@anthropic-ai/claude-code'
-    : '@openai/codex';
-  const installDir = resolve(CLI_DIR, tool === 'claude' ? 'claude-code' : 'codex');
-  const pkgPath = resolve(installDir, 'node_modules', ...pkg.split('/'));
+  const toolCfg = TOOL_CONFIG[tool];
+  const installDir = resolve(CLI_DIR, toolCfg.installDir);
+  const pkgPath = resolve(installDir, 'node_modules', ...toolCfg.pkg.split('/'));
 
-  if (existsSync(pkgPath)) return;
+  if (existsSync(pkgPath)) {
+    try {
+      const bin = findCLIBin(tool);
+      if (existsSync(bin)) return;
+    } catch (err: unknown) {
+      const code = (err as NodeJS.ErrnoException).code;
+      if (!(err instanceof SyntaxError) && code !== 'ENOENT') throw err;
+    }
+    console.log(`\n⚠️  检测到 ${toolCfg.pkg} 安装不完整，正在修复...\n`);
+    rmSync(resolve(installDir, 'node_modules'), { recursive: true, force: true });
+  }
 
-  console.log(`\n📦 首次使用，正在下载 ${pkg}...`);
+  console.log(`\n📦 首次使用，正在下载 ${toolCfg.pkg}...`);
   console.log('   (仅首次需要，后续启动无需等待)\n');
 
   mkdirSync(installDir, { recursive: true });
@@ -48,13 +57,13 @@ export async function ensureCLIInstalled(tool: 'claude' | 'codex') {
 
   try {
     execSync(
-      `npm install ${pkg} --prefix "${installDir}" --registry=${registry}`,
+      `npm install ${toolCfg.pkg} --prefix "${installDir}" --registry=${registry}`,
       { stdio: 'inherit', timeout: 120000 }
     );
     console.log('✅ 下载完成\n');
   } catch {
     console.error('❌ 下载失败，请检查网络或手动执行:');
-    console.error(`   npm install ${pkg} --prefix "${installDir}" --registry=${registry}`);
+    console.error(`   npm install ${toolCfg.pkg} --prefix "${installDir}" --registry=${registry}`);
     process.exit(1);
   }
 }

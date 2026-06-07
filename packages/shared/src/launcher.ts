@@ -1,7 +1,8 @@
 import { spawn } from 'child_process';
+import { existsSync } from 'fs';
 import { openBrowser } from './browser';
 import { getConfig, saveConfig, KKConfig } from './config';
-import { SITE_URL, TOOL_CONFIG } from './constants';
+import { SITE_URL, TOOL_CONFIG, CLI_DIR } from './constants';
 import { findCLIBin } from './resolve';
 import { ensureCLIInstalled } from './installer';
 
@@ -35,6 +36,11 @@ export async function launch(tool: 'claude' | 'codex') {
   await ensureCLIInstalled(tool);
 
   const bin = findCLIBin(tool);
+  if (!existsSync(bin)) {
+    console.error(`❌ 找不到可执行文件: ${bin}`);
+    console.error(`   请尝试删除 ${CLI_DIR} 目录后重新运行`);
+    process.exit(1);
+  }
   const args = process.argv.slice(2);
 
   const isScript = /\.(js|mjs|cjs)$/.test(bin);

@@ -1,6 +1,6 @@
 {
   "name": "kk-claude",
-  "version": "2.1.166-kk.4",
+  "version": "2.1.166-kk.5",
   "description": "Claude Code 国内加速启动器 - Powered by kk-vibe.top",
   "bin": {
     "kk-claude": "./bin/kk-claude.js"
